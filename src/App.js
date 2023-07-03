@@ -23,22 +23,26 @@ const initialFriends = [
 
 export default function App() {
   const [isFormOpened, setIsFormOpened] = useState(false);
+  const [friends, setFriends] = useState(initialFriends);
 
   const handleFormOpen = () => setIsFormOpened(!isFormOpened);
+  const addFriend = (friend) => setFriends((friends) => [...friends, friend]);
   return (
     <div className="app">
       <div className="sidebar">
-        <FriendsList />
-        <FormAddFriend />
-        <Button onClick={handleFormOpen}>Add Friend</Button>
+        <FriendsList friends={friends} />
+
+        {isFormOpened && <FormAddFriend addFriend={addFriend} />}
+        <Button onClick={handleFormOpen}>
+          {isFormOpened ? "Close" : "Add Friend"}
+        </Button>
       </div>
       <FormSplitBill />
     </div>
   );
 }
 
-function FriendsList() {
-  const friends = initialFriends;
+function FriendsList({ friends }) {
   return (
     <ul>
       {friends.map((friend) => (
@@ -76,14 +80,32 @@ function Button({ children, onClick }) {
     </button>
   );
 }
-function FormAddFriend() {
+function FormAddFriend({ addFriend }) {
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("https://i.pravatar.cc/48");
+
+  const id = crypto.randomUUID();
+  const handleSubmit = () => {
+    if (!image || !name) return;
+    const newFriend = {
+      id,
+      name,
+      image: `${image}?=${id}`,
+      balance: 0,
+    };
+    addFriend(newFriend);
+  };
   return (
-    <form className="form-add-friend">
+    <form className="form-add-friend" onSubmit={handleSubmit}>
       <label> Friend name</label>
-      <input type="text" />
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
       <label> image url</label>
-      <input type="text" />
+      <input type="text" value={image} />
 
       <Button>Add</Button>
     </form>
