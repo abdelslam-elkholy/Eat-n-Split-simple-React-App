@@ -1,5 +1,3 @@
-import "./App.css";
-
 const initialFriends = [
   {
     id: 118836,
@@ -45,7 +43,7 @@ function FriendsList() {
 function Friend({ friend }) {
   return (
     <div>
-      <li>friend.name</li>
+      <li>{friend.name}</li>
     </div>
   );
 }
