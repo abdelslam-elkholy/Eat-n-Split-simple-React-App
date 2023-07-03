@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const initialFriends = [
   {
     id: 118836,
@@ -20,11 +22,17 @@ const initialFriends = [
 ];
 
 export default function App() {
+  const [isFormOpened, setIsFormOpened] = useState(false);
+
+  const handleFormOpen = () => setIsFormOpened(!isFormOpened);
   return (
     <div className="app">
       <div className="sidebar">
         <FriendsList />
+        <FormAddFriend />
+        <Button onClick={handleFormOpen}>Add Friend</Button>
       </div>
+      <FormSplitBill />
     </div>
   );
 }
@@ -57,7 +65,52 @@ function Friend({ friend }) {
       )}
       {friend.balance === 0 && <p>you and {friend.name} are even</p>}
 
-      <button className="button">Select</button>
+      <Button>Select</Button>
     </li>
+  );
+}
+function Button({ children, onClick }) {
+  return (
+    <button onClick={onClick} className="button">
+      {children}
+    </button>
+  );
+}
+function FormAddFriend() {
+  return (
+    <form className="form-add-friend">
+      <label> Friend name</label>
+      <input type="text" />
+
+      <label> image url</label>
+      <input type="text" />
+
+      <Button>Add</Button>
+    </form>
+  );
+}
+
+function FormSplitBill() {
+  return (
+    <form className="form-split-bill">
+      <h2>Split a bill with x</h2>
+
+      <label> Bill Value</label>
+      <input type="text" />
+
+      <label> Your Expense</label>
+      <input type="text" />
+
+      <label> x's Expenses</label>
+      <input type="text" disabled />
+
+      <label>Who is Paying The Bill</label>
+      <select>
+        <option value="user">You</option>
+        <option value="friend">x</option>
+      </select>
+
+      <Button>Split Bill</Button>
+    </form>
   );
 }
