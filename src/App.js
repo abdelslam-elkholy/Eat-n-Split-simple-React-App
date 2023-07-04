@@ -72,7 +72,7 @@ function FriendsList({ friends, selectFriend, selectedFriend }) {
 }
 
 function Friend({ friend, selectFriend, selectedFriend }) {
-  const isSelected = selectedFriend.id === friend.id;
+  const isSelected = selectedFriend?.id === friend.id;
   return (
     <li className={isSelected ? "selected" : ""}>
       <img src={friend.image} alt={friend.name} />
