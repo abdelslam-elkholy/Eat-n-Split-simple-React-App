@@ -24,13 +24,19 @@ const initialFriends = [
 export default function App() {
   const [isFormOpened, setIsFormOpened] = useState(false);
   const [friends, setFriends] = useState(initialFriends);
+  const [selectedFriend, setSelectedFriend] = useState("");
+
+  const selectFriend = (friend) => setSelectedFriend(friend);
 
   const handleFormOpen = () => setIsFormOpened(!isFormOpened);
-  const addFriend = (friend) => setFriends((friends) => [...friends, friend]);
+  const addFriend = (friend) => {
+    setFriends((friends) => [...friends, friend]);
+    handleFormOpen();
+  };
   return (
     <div className="app">
       <div className="sidebar">
-        <FriendsList friends={friends} />
+        <FriendsList friends={friends} selectedFriend={selectFriend} />
 
         {isFormOpened && <FormAddFriend addFriend={addFriend} />}
         <Button onClick={handleFormOpen}>
@@ -42,17 +48,21 @@ export default function App() {
   );
 }
 
-function FriendsList({ friends }) {
+function FriendsList({ friends, selectedFriend }) {
   return (
     <ul>
       {friends.map((friend) => (
-        <Friend friend={friend} key={friend.id} />
+        <Friend
+          friend={friend}
+          key={friend.id}
+          selectedFriend={selectedFriend}
+        />
       ))}
     </ul>
   );
 }
 
-function Friend({ friend }) {
+function Friend({ friend, selectedFriend }) {
   return (
     <li>
       <img src={friend.image} alt={friend.name} />
@@ -69,7 +79,7 @@ function Friend({ friend }) {
       )}
       {friend.balance === 0 && <p>you and {friend.name} are even</p>}
 
-      <Button>Select</Button>
+      <Button onClick={(e) => selectedFriend(friend.name)}>Select</Button>
     </li>
   );
 }
@@ -116,15 +126,17 @@ function FormAddFriend({ addFriend }) {
 }
 
 function FormSplitBill() {
+  const [bill, setBill] = useState(0);
+
   return (
     <form className="form-split-bill">
       <h2>Split a bill with x</h2>
 
       <label> Bill Value</label>
-      <input type="text" />
+      <input type="number" />
 
       <label> Your Expense</label>
-      <input type="text" />
+      <input type="number" />
 
       <label> x's Expenses</label>
       <input type="text" disabled />
