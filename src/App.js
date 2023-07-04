@@ -44,14 +44,15 @@ export default function App() {
       const allFriends = friends.filter(
         (friend) => friend.id !== selectedFriend.id
       );
-      const balance =
-        whoPays === "user" ? yourExp - yourFriend : yourFriend - yourExp;
+      const balance = whoPays === "user" ? yourFriend : -yourExp;
       const editeted = {
-        id: selectFriend.id,
-        name: selectFriend.name,
-        image: selectFriend.image,
+        id: selectedFriend.id,
+        name: selectedFriend.name,
+        image: selectedFriend.image,
         balance: balance,
       };
+
+      setFriends((friends) => [...allFriends, editeted]);
     }
   };
   return (
@@ -164,7 +165,10 @@ function FormSplitBill({ selectedFriend, setBalance }) {
     selectedFriend && (
       <form
         className="form-split-bill"
-        onSubmit={(e) => setBalance(yourExpenses, diffrence, whoPays)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          setBalance(yourExpenses, diffrence, whoPays);
+        }}
       >
         <h2>Split a bill with {selectedFriend.name}</h2>
 
@@ -177,7 +181,14 @@ function FormSplitBill({ selectedFriend, setBalance }) {
         <label> Your Expense</label>
         <input
           type="number"
-          onChange={(e) => setYourExpenses(Number(e.target.value))}
+          value={yourExpenses}
+          onChange={(e) =>
+            setYourExpenses(
+              Number(e.target.value) > bill
+                ? yourExpenses
+                : Number(e.target.value)
+            )
+          }
         />
 
         <label> {selectedFriend.name}'s Expenses</label>
